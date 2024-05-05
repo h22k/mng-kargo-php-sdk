@@ -1,0 +1,12 @@
+/vendor/
+.env
+/storage
+/storage/*
+
+/.phpunit.cache
+/.phpunit.cache/*
+
+/coverage-report
+/coverage-report/*
+
+.php-cs-fixer.cache
