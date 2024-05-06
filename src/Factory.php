@@ -36,11 +36,11 @@ class Factory
     private ?LoggerInterface $logger = null;
 
     public function __construct(
-        private string $apiKey,
-        private string $apiSecret,
-        private string $username,
-        private string $password,
-        private string $mngClientNumber
+        private readonly string $apiKey,
+        private readonly string $apiSecret,
+        private readonly string $username,
+        private readonly string $password,
+        private readonly string $mngClientNumber
     ) {
     }
 
@@ -110,6 +110,10 @@ class Factory
         return $this;
     }
 
+    /**
+     * @param array<string, string|int|bool> $headers
+     * @return $this
+     */
     public function setHeaders(array $headers): Factory
     {
         $this->headers = $headers;

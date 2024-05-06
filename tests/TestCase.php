@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace H22k\MngKargo\Test;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
 

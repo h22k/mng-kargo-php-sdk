@@ -33,6 +33,9 @@ class MngClientRequestOption
         return $this;
     }
 
+    /**
+     * @return array{headers?: non-empty-array, query?: non-empty-array, json?: non-empty-array}
+     */
     public function toArray(): array
     {
         $options = [];
@@ -52,18 +55,41 @@ class MngClientRequestOption
         return $options;
     }
 
+    /**
+     * @return array<string, string|int|bool>
+     */
     public function getHeaders(): array
     {
         return $this->headers;
     }
 
+    /**
+     * @return array<string, string|int|bool>
+     */
     public function getQueryParams(): array
     {
         return $this->queryParams;
     }
 
+    /**
+     * @return array<string, string|int|bool>
+     */
     public function getBodyParams(): array
     {
         return $this->bodyParams;
+    }
+
+    public function addQueryParam(string $key, bool|int|string $value): self
+    {
+        $this->queryParams[$key] = $value;
+
+        return $this;
+    }
+
+    public function addBodyParam(string $key, bool|int|string $value): self
+    {
+        $this->bodyParams[$key] = $value;
+
+        return $this;
     }
 }
