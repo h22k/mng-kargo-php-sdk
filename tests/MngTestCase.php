@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace H22k\MngKargo\Test;
 
+use ReflectionClass;
 use ReflectionException;
 
+/**
+ * @coversNothing
+ */
 class MngTestCase extends TestCase
 {
     /**
@@ -13,7 +17,8 @@ class MngTestCase extends TestCase
      */
     protected function getPrivateProperty(object $object, string $propertyName): mixed
     {
-        $reflection = new \ReflectionClass($object);
+        $reflection = new ReflectionClass($object);
+
         return $reflection->getProperty($propertyName)->getValue($object);
     }
 }

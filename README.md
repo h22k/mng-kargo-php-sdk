@@ -7,7 +7,7 @@ This is a PHP client for the MngKargo API. It provides a simple and convenient w
 
 ## Requirements
 
-- PHP 8.0 or higher
+- PHP 8.1 or higher
 - Composer
 
 [//]: # (## Installation)

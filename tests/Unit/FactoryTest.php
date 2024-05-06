@@ -43,7 +43,6 @@ class FactoryTest extends MngTestCase
         $factory = Factory::create(
             'API_KEY',
             'API_SECRET',
-            'USERNAME',
             'PASS',
             'CLIENT_NUMBER'
         );
@@ -52,7 +51,6 @@ class FactoryTest extends MngTestCase
 
         $this->assertEquals('API_KEY', $this->getPrivateProperty($factory, 'apiKey'));
         $this->assertEquals('API_SECRET', $this->getPrivateProperty($factory, 'apiSecret'));
-        $this->assertEquals('USERNAME', $this->getPrivateProperty($factory, 'username'));
         $this->assertEquals('PASS', $this->getPrivateProperty($factory, 'password'));
         $this->assertEquals('CLIENT_NUMBER', $this->getPrivateProperty($factory, 'mngClientNumber'));
     }
@@ -136,7 +134,6 @@ class FactoryTest extends MngTestCase
         $this->factory = new Factory(
             'API_KEY',
             'API_SECRET',
-            'USERNAME',
             'PASS',
             'CLIENT_NUMBER'
         );

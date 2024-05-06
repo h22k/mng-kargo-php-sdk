@@ -12,7 +12,7 @@ $finder = (new Finder())
 return (new Config())
     ->setRules([
         '@PhpCsFixer' => true,
-        '@PHP83Migration' => true,
+        '@PHP81Migration' => true,
         'global_namespace_import' => true,
         'php_unit_internal_class' => false,
     ])

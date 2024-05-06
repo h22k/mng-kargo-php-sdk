@@ -11,9 +11,7 @@ use H22k\MngKargo\Model\Contract\Model;
  */
 class Converter
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * @param Model<T> $model

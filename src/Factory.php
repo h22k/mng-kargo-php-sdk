@@ -38,7 +38,6 @@ class Factory
     public function __construct(
         private readonly string $apiKey,
         private readonly string $apiSecret,
-        private readonly string $username,
         private readonly string $password,
         private readonly string $mngClientNumber
     ) {
@@ -47,11 +46,10 @@ class Factory
     public static function create(
         string $apiKey,
         string $apiSecret,
-        string $username,
         string $password,
         string $mngClientNumber,
     ): self {
-        return new self($apiKey, $apiSecret, $username, $password, $mngClientNumber);
+        return new self($apiKey, $apiSecret, $password, $mngClientNumber);
     }
 
     public function setClient(Client|ClientInterface $client): Factory
@@ -111,7 +109,8 @@ class Factory
     }
 
     /**
-     * @param array<string, string|int|bool> $headers
+     * @param array<string, bool|int|string> $headers
+     *
      * @return $this
      */
     public function setHeaders(array $headers): Factory
@@ -132,7 +131,6 @@ class Factory
             $this->buildClient(),
             $this->apiKey,
             $this->apiSecret,
-            $this->username,
             $this->password,
             $this->mngClientNumber,
         ))

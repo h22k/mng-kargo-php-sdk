@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace H22k\MngKargo;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use H22k\MngKargo\Contract\ClientInterface;
+use H22k\MngKargo\Enum\ContentType;
 use H22k\MngKargo\Enum\HttpMethod;
+use H22k\MngKargo\Http\Payload;
+use H22k\MngKargo\Http\ValueObject\Body;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerInterface;
 
 final class MngClient
@@ -17,11 +20,12 @@ final class MngClient
 
     private ?LoggerInterface $logger = null;
 
+    private ?string $authToken = null;
+
     public function __construct(
         private readonly Client|ClientInterface $client,
         private string $apiKey,
         private string $apiSecret,
-        private string $userName,
         private string $userPassword,
         private string $mngClientNumber,
     ) {
@@ -41,50 +45,96 @@ final class MngClient
         return $this;
     }
 
-    public function post(string|UriInterface $uri, array $data): ResponseInterface
+    public function post(Payload $payload): ResponseInterface
     {
-        return $this->autoLoginRequest(HttpMethod::POST, MngClientRequestOption::from($uri, $data));
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::POST, ContentType::JSON, $payload)
+        );
     }
 
-    private function autoLoginRequest(HttpMethod $method, MngClientRequestOption $option): ResponseInterface
+    /**
+     * @param MngClientRequestOption $option
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    private function autoLoginRequest(MngClientRequestOption $option): ResponseInterface
     {
-        $option->addHeader('Content-Type', 'application/json');
-        $option->addHeader('Accept', 'application/json');
-        $option->addHeader('X-IBM-Client-Secret', $this->apiSecret);
-        $option->addHeader('X-IBM-Client-Id', $this->apiKey);
-
-        $response = $this->client->request($method->value, $option->getUri(), $option->toArray());
+        $response = $this->send($option);
 
         if ($response->getStatusCode() >= 400 && $this->autoLogin) {
-            // login and put auth token into header
-            if (null !== $this->logger) {
-                $this->logger->error($response->getBody()->getContents());
-            }
+            // inside of this method, we set the authToken so that the next request will use the new token
+            // if we cant login with this method, we throw an exception
+            $this->doLogin();
 
-            //            $option->addHeader('Authorization', 'Bearer ' . 'hakan');
-            //            $response = $closure($option->getUri(), $option->toArray());
+            // retry the request with the new token just been created
+            $response = $this->send($option);
         }
 
         return $response;
     }
 
-    public function get(string|UriInterface $uri, array $data): ResponseInterface
+    /**
+     * @param MngClientRequestOption $option
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    private function send(MngClientRequestOption $option): ResponseInterface
     {
-        return $this->autoLoginRequest(HttpMethod::GET, MngClientRequestOption::from($uri, $data));
+        $option->setDefaultHeader($this->apiKey, $this->apiSecret, $this->authToken);
+
+        $response = $this->client->request($option->getMethod(), $option->getUri(), $option->getOptions());
+
+        if ($response->getStatusCode() >= 400) {
+            $this->logger?->error(serialize($response));
+        }
+
+        return $response;
     }
 
-    public function put(string|UriInterface $uri, array $data): ResponseInterface
+    private function doLogin(): void
     {
-        return $this->autoLoginRequest(HttpMethod::PUT, MngClientRequestOption::from($uri, $data));
+        $payload = Payload::from('token', new Body([
+            'customerNumber' => $this->mngClientNumber,
+            'password' => $this->userPassword,
+            'identityType' => 1,
+        ]));
+
+        $option = MngClientRequestOption::from(HttpMethod::POST, ContentType::JSON, $payload);
+
+        $response = $this->send($option);
+
+        if ($response->getStatusCode() >= 400) {
+            throw new \RuntimeException('Login failed');
+        }
+
+        $this->authToken = json_decode($response->getBody()->getContents(), true)['jwt']; //TODO:: make here better
     }
 
-    public function delete(string|UriInterface $uri, array $data): ResponseInterface
+    public function get(Payload $payload): ResponseInterface
     {
-        return $this->autoLoginRequest(HttpMethod::DELETE, MngClientRequestOption::from($uri, $data));
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::GET, ContentType::JSON, $payload)
+        );
     }
 
-    public function patch(string|UriInterface $uri, array $data): ResponseInterface
+    public function put(Payload $payload): ResponseInterface
     {
-        return $this->autoLoginRequest(HttpMethod::PATCH, MngClientRequestOption::from($uri, $data));
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::PUT, ContentType::JSON, $payload)
+        );
+    }
+
+    public function delete(Payload $payload): ResponseInterface
+    {
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::DELETE, ContentType::JSON, $payload)
+        );
+    }
+
+    public function patch(Payload $payload): ResponseInterface
+    {
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::PATCH, ContentType::JSON, $payload)
+        );
     }
 }
