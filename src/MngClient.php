@@ -16,6 +16,8 @@ use Psr\Log\LoggerInterface;
 
 final class MngClient
 {
+    private const UNAUTHORIZED_STATUS_CODE = 401;
+
     private bool $autoLogin = true;
 
     private ?LoggerInterface $logger = null;
@@ -45,10 +47,10 @@ final class MngClient
         return $this;
     }
 
-    public function post(Payload $payload): ResponseInterface
+    public function get(Payload $payload): ResponseInterface
     {
         return $this->autoLoginRequest(
-            MngClientRequestOption::from(HttpMethod::POST, ContentType::JSON, $payload)
+            MngClientRequestOption::from(HttpMethod::GET, ContentType::JSON, $payload)
         );
     }
 
@@ -61,7 +63,7 @@ final class MngClient
     {
         $response = $this->send($option);
 
-        if ($response->getStatusCode() >= 400 && $this->autoLogin) {
+        if ($this->autoLogin && $response->getStatusCode() === self::UNAUTHORIZED_STATUS_CODE) {
             // inside of this method, we set the authToken so that the next request will use the new token
             // if we cant login with this method, we throw an exception
             $this->doLogin();
@@ -110,13 +112,6 @@ final class MngClient
         $this->authToken = json_decode($response->getBody()->getContents(), true)['jwt']; //TODO:: make here better
     }
 
-    public function get(Payload $payload): ResponseInterface
-    {
-        return $this->autoLoginRequest(
-            MngClientRequestOption::from(HttpMethod::GET, ContentType::JSON, $payload)
-        );
-    }
-
     public function put(Payload $payload): ResponseInterface
     {
         return $this->autoLoginRequest(
@@ -135,6 +130,13 @@ final class MngClient
     {
         return $this->autoLoginRequest(
             MngClientRequestOption::from(HttpMethod::PATCH, ContentType::JSON, $payload)
+        );
+    }
+
+    public function post(Payload $payload): ResponseInterface
+    {
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::POST, ContentType::JSON, $payload)
         );
     }
 }

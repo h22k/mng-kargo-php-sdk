@@ -33,7 +33,7 @@ abstract class AbstractValueObject implements HttpValue
         return $this->data;
     }
 
-    public function add(string $key, bool|int|string $value): HttpValue
+    public function add(string $key, bool|int|string $value): static
     {
         $this->data[$key] = $value;
 

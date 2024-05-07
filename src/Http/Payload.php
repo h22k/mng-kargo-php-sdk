@@ -75,4 +75,11 @@ final class Payload
 
         return $this;
     }
+
+    public function setAuthorizationKey(string $authKey): self
+    {
+        $this->header->authorization($authKey);
+
+        return $this;
+    }
 }

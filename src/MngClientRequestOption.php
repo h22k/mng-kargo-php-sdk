@@ -39,16 +39,12 @@ class MngClientRequestOption
         $this->payload->addHeader('X-IBM-Client-Secret', $apiSecret);
 
         if (null !== $authToken) {
-            $this->addAuthorizationKey($authToken);
+            $this->payload->setAuthorizationKey($authToken);
         }
     }
 
-    public function addAuthorizationKey(string $authToken): void
-    {
-        $this->payload->addHeader('Authorization', 'Bearer ' . $authToken);
-    }
-
     /**
+     * phpcs:ignore
      * @return array{json?: array<string, string|int|bool>, headers?: array<string, string|int|bool>, query?: array<string, string|int|bool>}
      */
     public function getOptions(): array
@@ -70,7 +66,7 @@ class MngClientRequestOption
         return $options;
     }
 
-    public function shouldHasBody(): bool
+    private function shouldHasBody(): bool
     {
         return in_array($this->method, [HttpMethod::POST, HttpMethod::PUT, HttpMethod::PATCH], true);
     }
