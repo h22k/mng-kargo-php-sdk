@@ -10,7 +10,8 @@ use H22k\MngKargo\Contract\ClientInterface;
 use H22k\MngKargo\Enum\ContentType;
 use H22k\MngKargo\Enum\HttpMethod;
 use H22k\MngKargo\Http\Payload;
-use H22k\MngKargo\Http\ValueObject\Body;
+use H22k\MngKargo\Service\LoginService;
+use JsonException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
@@ -26,10 +27,9 @@ final class MngClient
 
     public function __construct(
         private readonly Client|ClientInterface $client,
+        private LoginService $loginService,
         private string $apiKey,
         private string $apiSecret,
-        private string $userPassword,
-        private string $mngClientNumber,
     ) {
     }
 
@@ -57,7 +57,7 @@ final class MngClient
     /**
      * @param MngClientRequestOption $option
      * @return ResponseInterface
-     * @throws GuzzleException
+     * @throws GuzzleException|JsonException
      */
     private function autoLoginRequest(MngClientRequestOption $option): ResponseInterface
     {
@@ -66,7 +66,7 @@ final class MngClient
         if ($this->autoLogin && $response->getStatusCode() === self::UNAUTHORIZED_STATUS_CODE) {
             // inside of this method, we set the authToken so that the next request will use the new token
             // if we cant login with this method, we throw an exception
-            $this->doLogin();
+            $this->authToken = $this->loginService->login($this->client, $this->apiKey, $this->apiSecret);
 
             // retry the request with the new token just been created
             $response = $this->send($option);
@@ -91,25 +91,6 @@ final class MngClient
         }
 
         return $response;
-    }
-
-    private function doLogin(): void
-    {
-        $payload = Payload::from('token', new Body([
-            'customerNumber' => $this->mngClientNumber,
-            'password' => $this->userPassword,
-            'identityType' => 1,
-        ]));
-
-        $option = MngClientRequestOption::from(HttpMethod::POST, ContentType::JSON, $payload);
-
-        $response = $this->send($option);
-
-        if ($response->getStatusCode() >= 400) {
-            throw new \RuntimeException('Login failed');
-        }
-
-        $this->authToken = json_decode($response->getBody()->getContents(), true)['jwt']; //TODO:: make here better
     }
 
     public function put(Payload $payload): ResponseInterface

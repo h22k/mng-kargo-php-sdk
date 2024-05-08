@@ -130,13 +130,11 @@ class MngClientRequestOptionTest extends MngTestCase
         $this->assertArrayHasKey('X-IBM-Client-Id', $headers);
         $this->assertArrayHasKey('X-IBM-Client-Secret', $headers);
         $this->assertArrayHasKey('Authorization', $headers);
-        $this->assertArrayHasKey('Content-Type', $headers);
         $this->assertArrayHasKey('test', $headers);
 
         $this->assertSame('API_KEY', $headers['X-IBM-Client-Id']);
         $this->assertSame('API_SECRET', $headers['X-IBM-Client-Secret']);
         $this->assertSame('Bearer AUTH_TOKEN', $headers['Authorization']);
-        $this->assertSame(ContentType::JSON->value, $headers['Content-Type']);
         $this->assertSame('test', $headers['test']);
     }
 

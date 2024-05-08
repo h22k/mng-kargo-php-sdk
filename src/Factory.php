@@ -6,6 +6,7 @@ namespace H22k\MngKargo;
 
 use GuzzleHttp\Client;
 use H22k\MngKargo\Contract\ClientInterface;
+use H22k\MngKargo\Service\LoginService;
 use Psr\Log\LoggerInterface;
 
 class Factory
@@ -127,29 +128,17 @@ class Factory
 
     private function buildMngClient(): MngClient
     {
+        $client = $this->buildClient();
+        $loginService = new LoginService($this->mngClientNumber, $this->password);
+
         return (new MngClient(
-            $this->buildClient(),
+            $client,
+            $loginService,
             $this->apiKey,
             $this->apiSecret,
-            $this->password,
-            $this->mngClientNumber,
         ))
             ->setAutoLogin($this->autoLogin)
             ->setLogger($this->logger);
-    }
-
-    public function setLogger(?LoggerInterface $logger): Factory
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
-    public function setAutoLogin(bool $autoLogin): Factory
-    {
-        $this->autoLogin = $autoLogin;
-
-        return $this;
     }
 
     private function buildClient(): Client|ClientInterface
@@ -170,5 +159,19 @@ class Factory
         }
 
         return $this->client;
+    }
+
+    public function setLogger(?LoggerInterface $logger): Factory
+    {
+        $this->logger = $logger;
+
+        return $this;
+    }
+
+    public function setAutoLogin(bool $autoLogin): Factory
+    {
+        $this->autoLogin = $autoLogin;
+
+        return $this;
     }
 }

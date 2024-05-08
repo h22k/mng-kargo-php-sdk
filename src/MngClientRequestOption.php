@@ -15,7 +15,14 @@ class MngClientRequestOption
         ContentType $contentType,
         private readonly Payload $payload
     ) {
-        $this->payload->contentType($contentType);
+        if ($this->shouldHasBody()) {
+            $this->payload->contentType($contentType);
+        }
+    }
+
+    private function shouldHasBody(): bool
+    {
+        return in_array($this->method, [HttpMethod::POST, HttpMethod::PUT, HttpMethod::PATCH], true);
     }
 
     public static function from(HttpMethod $method, ContentType $contentType, Payload $payload): self
@@ -64,10 +71,5 @@ class MngClientRequestOption
         }
 
         return $options;
-    }
-
-    private function shouldHasBody(): bool
-    {
-        return in_array($this->method, [HttpMethod::POST, HttpMethod::PUT, HttpMethod::PATCH], true);
     }
 }
