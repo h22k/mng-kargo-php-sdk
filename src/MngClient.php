@@ -5,25 +5,31 @@ declare(strict_types=1);
 namespace H22k\MngKargo;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use H22k\MngKargo\Contract\ClientInterface;
+use H22k\MngKargo\Enum\ContentType;
 use H22k\MngKargo\Enum\HttpMethod;
+use H22k\MngKargo\Http\Payload;
+use H22k\MngKargo\Service\LoginService;
+use H22k\MngKargo\Service\ResponseTransformerService;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerInterface;
 
 final class MngClient
 {
-    private bool $autoLogin = true;
+    private const UNAUTHORIZED_STATUS_CODE = 401;
 
     private ?LoggerInterface $logger = null;
 
+    private bool $autoLogin = true;
+
+    private ?string $authToken = null;
+
     public function __construct(
         private readonly Client|ClientInterface $client,
+        private LoginService $loginService,
         private string $apiKey,
         private string $apiSecret,
-        private string $userName,
-        private string $userPassword,
-        private string $mngClientNumber,
     ) {
     }
 
@@ -41,50 +47,103 @@ final class MngClient
         return $this;
     }
 
-    public function post(string|UriInterface $uri, array $data): ResponseInterface
+    /**
+     * @param Payload $payload
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    public function get(Payload $payload): ResponseTransformerService
     {
-        return $this->autoLoginRequest(HttpMethod::POST, MngClientRequestOption::from($uri, $data));
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::GET, ContentType::JSON, $payload),
+        );
     }
 
-    private function autoLoginRequest(HttpMethod $method, MngClientRequestOption $option): ResponseInterface
+
+    /**
+     * @param MngClientRequestOption $option
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    private function autoLoginRequest(MngClientRequestOption $option): ResponseTransformerService
     {
-        $option->addHeader('Content-Type', 'application/json');
-        $option->addHeader('Accept', 'application/json');
-        $option->addHeader('X-IBM-Client-Secret', $this->apiSecret);
-        $option->addHeader('X-IBM-Client-Id', $this->apiKey);
+        $response = $this->send($option);
 
-        $response = $this->client->request($method->value, $option->getUri(), $option->toArray());
+        if ($this->autoLogin && $response->getStatusCode() === self::UNAUTHORIZED_STATUS_CODE) {
+            // inside of this method, we set the authToken so that the next request will use the new token
+            // if we cant login with this method, we throw an exception
+            $this->authToken = $this->loginService->login($this->client, $this->apiKey, $this->apiSecret);
 
-        if ($response->getStatusCode() >= 400 && $this->autoLogin) {
-            // login and put auth token into header
-            if (null !== $this->logger) {
-                $this->logger->error($response->getBody()->getContents());
-            }
+            // retry the request with the new token just been created
+            $response = $this->send($option);
+        }
 
-            //            $option->addHeader('Authorization', 'Bearer ' . 'hakan');
-            //            $response = $closure($option->getUri(), $option->toArray());
+        return new ResponseTransformerService($response);
+    }
+
+    /**
+     * @param MngClientRequestOption $option
+     * @return ResponseInterface
+     * @throws GuzzleException
+     */
+    private function send(MngClientRequestOption $option): ResponseInterface
+    {
+        $option->setDefaultHeader($this->apiKey, $this->apiSecret, $this->authToken);
+
+        $response = $this->client->request($option->getMethod(), $option->getUri(), $option->getOptions());
+
+        if ($response->getStatusCode() >= 400) {
+            $this->logger?->error(serialize($response));
         }
 
         return $response;
     }
 
-    public function get(string|UriInterface $uri, array $data): ResponseInterface
+    /**
+     * @param Payload $payload
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    public function put(Payload $payload): ResponseTransformerService
     {
-        return $this->autoLoginRequest(HttpMethod::GET, MngClientRequestOption::from($uri, $data));
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::PUT, ContentType::JSON, $payload)
+        );
     }
 
-    public function put(string|UriInterface $uri, array $data): ResponseInterface
+    /**
+     * @param Payload $payload
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    public function delete(Payload $payload): ResponseTransformerService
     {
-        return $this->autoLoginRequest(HttpMethod::PUT, MngClientRequestOption::from($uri, $data));
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::DELETE, ContentType::JSON, $payload)
+        );
     }
 
-    public function delete(string|UriInterface $uri, array $data): ResponseInterface
+    /**
+     * @param Payload $payload
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    public function patch(Payload $payload): ResponseTransformerService
     {
-        return $this->autoLoginRequest(HttpMethod::DELETE, MngClientRequestOption::from($uri, $data));
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::PATCH, ContentType::JSON, $payload)
+        );
     }
 
-    public function patch(string|UriInterface $uri, array $data): ResponseInterface
+    /**
+     * @param Payload $payload
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    public function post(Payload $payload): ResponseTransformerService
     {
-        return $this->autoLoginRequest(HttpMethod::PATCH, MngClientRequestOption::from($uri, $data));
+        return $this->autoLoginRequest(
+            MngClientRequestOption::from(HttpMethod::POST, ContentType::JSON, $payload)
+        );
     }
 }

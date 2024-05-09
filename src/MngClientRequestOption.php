@@ -4,66 +4,72 @@ declare(strict_types=1);
 
 namespace H22k\MngKargo;
 
-use Psr\Http\Message\UriInterface;
+use H22k\MngKargo\Enum\ContentType;
+use H22k\MngKargo\Enum\HttpMethod;
+use H22k\MngKargo\Http\Payload;
 
 class MngClientRequestOption
 {
     public function __construct(
-        private string|UriInterface $uri,
-        private array $headers = [],
-        private array $queryParams = [],
-        private array $bodyParams = []
+        private readonly HttpMethod $method,
+        ContentType $contentType,
+        private readonly Payload $payload
     ) {
+        if ($this->shouldHasBody()) {
+            $this->payload->contentType($contentType);
+        }
     }
 
-    public static function from(string|UriInterface $uri, array $data): self
+    private function shouldHasBody(): bool
     {
-        return new self($uri, $data['headers'] ?? [], $data['query'] ?? [], $data['body'] ?? []);
+        return in_array($this->method, [HttpMethod::POST, HttpMethod::PUT, HttpMethod::PATCH], true);
     }
 
-    public function getUri(): string|UriInterface
+    public static function from(HttpMethod $method, ContentType $contentType, Payload $payload): self
     {
-        return $this->uri;
+        return new self($method, $contentType, $payload);
     }
 
-    public function addHeader(string $key, bool|int|string $value): self
+    public function getMethod(): string
     {
-        $this->headers[$key] = $value;
-
-        return $this;
+        return $this->method->value;
     }
 
-    public function toArray(): array
+    public function getUri(): string
+    {
+        return $this->payload->getUri();
+    }
+
+    public function setDefaultHeader(string $apiKey, string $apiSecret, ?string $authToken): void
+    {
+        $this->payload->addHeader('X-IBM-Client-Id', $apiKey);
+        $this->payload->addHeader('X-IBM-Client-Secret', $apiSecret);
+
+        if (null !== $authToken) {
+            $this->payload->setAuthorizationKey($authToken);
+        }
+    }
+
+    /**
+     * phpcs:ignore
+     * @return array{json?: array<string, string|int|bool>, headers?: array<string, string|int|bool>, query?: array<string, string|int|bool>}
+     */
+    public function getOptions(): array
     {
         $options = [];
 
-        if (0 !== count($this->headers)) {
-            $options['headers'] = $this->headers;
+        if ($this->shouldHasBody() && count($this->payload->getBody()) > 0) {
+            $options['json'] = $this->payload->getBody();
         }
 
-        if (0 !== count($this->queryParams)) {
-            $options['query'] = $this->queryParams;
+        if (count($this->payload->getHeaders()) > 0) {
+            $options['headers'] = $this->payload->getHeaders();
         }
 
-        if (0 !== count($this->bodyParams)) {
-            $options['json'] = $this->bodyParams;
+        if (count($this->payload->getQueryParams()) > 0) {
+            $options['query'] = $this->payload->getQueryParams();
         }
 
         return $options;
-    }
-
-    public function getHeaders(): array
-    {
-        return $this->headers;
-    }
-
-    public function getQueryParams(): array
-    {
-        return $this->queryParams;
-    }
-
-    public function getBodyParams(): array
-    {
-        return $this->bodyParams;
     }
 }

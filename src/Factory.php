@@ -6,6 +6,7 @@ namespace H22k\MngKargo;
 
 use GuzzleHttp\Client;
 use H22k\MngKargo\Contract\ClientInterface;
+use H22k\MngKargo\Service\LoginService;
 use Psr\Log\LoggerInterface;
 
 class Factory
@@ -36,22 +37,20 @@ class Factory
     private ?LoggerInterface $logger = null;
 
     public function __construct(
-        private string $apiKey,
-        private string $apiSecret,
-        private string $username,
-        private string $password,
-        private string $mngClientNumber
+        private readonly string $apiKey,
+        private readonly string $apiSecret,
+        private readonly string $password,
+        private readonly string $mngClientNumber
     ) {
     }
 
     public static function create(
         string $apiKey,
         string $apiSecret,
-        string $username,
         string $password,
         string $mngClientNumber,
     ): self {
-        return new self($apiKey, $apiSecret, $username, $password, $mngClientNumber);
+        return new self($apiKey, $apiSecret, $password, $mngClientNumber);
     }
 
     public function setClient(Client|ClientInterface $client): Factory
@@ -110,6 +109,11 @@ class Factory
         return $this;
     }
 
+    /**
+     * @param array<string, bool|int|string> $headers
+     *
+     * @return $this
+     */
     public function setHeaders(array $headers): Factory
     {
         $this->headers = $headers;
@@ -124,30 +128,17 @@ class Factory
 
     private function buildMngClient(): MngClient
     {
+        $client = $this->buildClient();
+        $loginService = new LoginService($this->mngClientNumber, $this->password);
+
         return (new MngClient(
-            $this->buildClient(),
+            $client,
+            $loginService,
             $this->apiKey,
             $this->apiSecret,
-            $this->username,
-            $this->password,
-            $this->mngClientNumber,
         ))
             ->setAutoLogin($this->autoLogin)
             ->setLogger($this->logger);
-    }
-
-    public function setLogger(?LoggerInterface $logger): Factory
-    {
-        $this->logger = $logger;
-
-        return $this;
-    }
-
-    public function setAutoLogin(bool $autoLogin): Factory
-    {
-        $this->autoLogin = $autoLogin;
-
-        return $this;
     }
 
     private function buildClient(): Client|ClientInterface
@@ -168,5 +159,19 @@ class Factory
         }
 
         return $this->client;
+    }
+
+    public function setLogger(?LoggerInterface $logger): Factory
+    {
+        $this->logger = $logger;
+
+        return $this;
+    }
+
+    public function setAutoLogin(bool $autoLogin): Factory
+    {
+        $this->autoLogin = $autoLogin;
+
+        return $this;
     }
 }
