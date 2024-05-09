@@ -28,7 +28,7 @@ class CityResponse extends MngResponse
      */
     public static function from(ResponseTransformerService $transformerService): self
     {
-        $body = $transformerService->getBody();
+        $body   = $transformerService->getBody();
         $cities = [];
 
         foreach ($body as $city) {

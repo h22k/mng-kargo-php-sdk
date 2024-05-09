@@ -15,6 +15,9 @@ use H22k\MngKargo\Service\ResponseTransformerService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Wrapper client class to centralize the request submission process.
+ */
 final class MngClient
 {
     private const UNAUTHORIZED_STATUS_CODE = 401;

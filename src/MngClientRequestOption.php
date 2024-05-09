@@ -8,6 +8,9 @@ use H22k\MngKargo\Enum\ContentType;
 use H22k\MngKargo\Enum\HttpMethod;
 use H22k\MngKargo\Http\Payload;
 
+/**
+ * Entity pattern implementation to manage request options easier.
+ */
 class MngClientRequestOption
 {
     public function __construct(

@@ -114,4 +114,8 @@
         <exclude-pattern>tests/Core/Tokenizer/StableCommentWhitespaceWinTest\.php</exclude-pattern>
     </rule>
 
+    <rule ref="Generic.Files.LineLength.TooLong">
+        <exclude-pattern>src/Resource/CbsInfo.php</exclude-pattern>
+    </rule>
+
 </ruleset>

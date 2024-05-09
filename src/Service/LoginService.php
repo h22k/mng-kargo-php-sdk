@@ -10,6 +10,8 @@ use H22k\MngKargo\Contract\ClientInterface;
 
 /**
  * This class is responsible for login to MNG API service.
+ *
+ * @see https://sandbox.mngkargo.com.tr/tr/product/2136/api/2129#/IdentityAPI_10/operation/%2Ftoken/post
  */
 class LoginService
 {

@@ -9,6 +9,9 @@ use H22k\MngKargo\Contract\ClientInterface;
 use H22k\MngKargo\Service\LoginService;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Factory Pattern implementation for creating MNG manager.
+ */
 class Factory
 {
     private ?string $baseUrl = null;
@@ -128,7 +131,7 @@ class Factory
 
     private function buildMngClient(): MngClient
     {
-        $client = $this->buildClient();
+        $client       = $this->buildClient();
         $loginService = new LoginService($this->mngClientNumber, $this->password);
 
         return (new MngClient(

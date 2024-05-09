@@ -11,8 +11,16 @@ use H22k\MngKargo\Model\Response\CbsInfo\DistrictResponse;
 use H22k\MngKargo\Model\Response\CbsInfo\Object\City;
 use H22k\MngKargo\Service\ResponseTransformerService;
 
+/**
+ * [TR] Şehirler, ilçeler mahalleler gibi coğrafik bilgileri getirir ve servis dışı ve mobil olan alanları listeler.
+ * [EN] Gets geographic informations like citites, districts, neighborhoods and lists out of service areas and mobile areas.
+ * @see https://apizone.mngkargo.com.tr/tr/product/3066/api/1741#/CBSInfoAPI_10/overview
+ */
 class CbsInfo extends AbstractResource
 {
+    /**
+     * Resource path prefix.
+     */
     public const PATH_PREFIX = 'cbsinfoapi';
 
     public const GET_CITIES_URI = 'getcities';
@@ -20,8 +28,12 @@ class CbsInfo extends AbstractResource
     public const GET_DISTRICTS_URI = 'getdistricts';
 
     /**
-     * @return CityResponse
+     * [TR] Türkiye'deki şehirlerin ismini ve kodlarını getirir.
+     * [EN] Gets city names and city codes of Turkey.
+     *
      * @throws GuzzleException
+     *
+     * @see https://sandbox.mngkargo.com.tr/tr/product/2134/api/2121#/CBSInfoAPI_10/operation/%2Fgetcities/get
      */
     public function getCities(): CityResponse
     {
@@ -36,13 +48,16 @@ class CbsInfo extends AbstractResource
     }
 
     /**
-     * @param City $city
-     * @return DistrictResponse
+     * [TR] İlgili şehir koduna ait ilçe isimlerini ve kodlarını getirir.
+     * [EN] Gets district names and district codes of the relevant city code.
+     *
      * @throws GuzzleException
+     *
+     * @see https://sandbox.mngkargo.com.tr/tr/product/2134/api/2121#/CBSInfoAPI_10/operation/%2Fgetdistricts%2F{cityCode}/get
      */
     public function getDistricts(City $city): DistrictResponse
     {
-        $payload = Payload::from(self::PATH_PREFIX . '/' . self::GET_DISTRICTS_URI . '/1');
+        $payload = Payload::from(self::PATH_PREFIX . '/' . self::GET_DISTRICTS_URI . $city->getCode());
 
         $responseTransformerService = $this->client->get($payload);
 
