@@ -11,7 +11,7 @@ use H22k\MngKargo\Enum\ContentType;
 use H22k\MngKargo\Enum\HttpMethod;
 use H22k\MngKargo\Http\Payload;
 use H22k\MngKargo\Service\LoginService;
-use JsonException;
+use H22k\MngKargo\Service\ResponseTransformerService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
@@ -19,9 +19,9 @@ final class MngClient
 {
     private const UNAUTHORIZED_STATUS_CODE = 401;
 
-    private bool $autoLogin = true;
-
     private ?LoggerInterface $logger = null;
+
+    private bool $autoLogin = true;
 
     private ?string $authToken = null;
 
@@ -47,19 +47,25 @@ final class MngClient
         return $this;
     }
 
-    public function get(Payload $payload): ResponseInterface
+    /**
+     * @param Payload $payload
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    public function get(Payload $payload): ResponseTransformerService
     {
         return $this->autoLoginRequest(
-            MngClientRequestOption::from(HttpMethod::GET, ContentType::JSON, $payload)
+            MngClientRequestOption::from(HttpMethod::GET, ContentType::JSON, $payload),
         );
     }
 
+
     /**
      * @param MngClientRequestOption $option
-     * @return ResponseInterface
-     * @throws GuzzleException|JsonException
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
      */
-    private function autoLoginRequest(MngClientRequestOption $option): ResponseInterface
+    private function autoLoginRequest(MngClientRequestOption $option): ResponseTransformerService
     {
         $response = $this->send($option);
 
@@ -72,7 +78,7 @@ final class MngClient
             $response = $this->send($option);
         }
 
-        return $response;
+        return new ResponseTransformerService($response);
     }
 
     /**
@@ -93,28 +99,48 @@ final class MngClient
         return $response;
     }
 
-    public function put(Payload $payload): ResponseInterface
+    /**
+     * @param Payload $payload
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    public function put(Payload $payload): ResponseTransformerService
     {
         return $this->autoLoginRequest(
             MngClientRequestOption::from(HttpMethod::PUT, ContentType::JSON, $payload)
         );
     }
 
-    public function delete(Payload $payload): ResponseInterface
+    /**
+     * @param Payload $payload
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    public function delete(Payload $payload): ResponseTransformerService
     {
         return $this->autoLoginRequest(
             MngClientRequestOption::from(HttpMethod::DELETE, ContentType::JSON, $payload)
         );
     }
 
-    public function patch(Payload $payload): ResponseInterface
+    /**
+     * @param Payload $payload
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    public function patch(Payload $payload): ResponseTransformerService
     {
         return $this->autoLoginRequest(
             MngClientRequestOption::from(HttpMethod::PATCH, ContentType::JSON, $payload)
         );
     }
 
-    public function post(Payload $payload): ResponseInterface
+    /**
+     * @param Payload $payload
+     * @return ResponseTransformerService<mixed>
+     * @throws GuzzleException
+     */
+    public function post(Payload $payload): ResponseTransformerService
     {
         return $this->autoLoginRequest(
             MngClientRequestOption::from(HttpMethod::POST, ContentType::JSON, $payload)

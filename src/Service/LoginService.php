@@ -7,7 +7,6 @@ namespace H22k\MngKargo\Service;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use H22k\MngKargo\Contract\ClientInterface;
-use JsonException;
 
 /**
  * This class is responsible for login to MNG API service.
@@ -26,7 +25,6 @@ class LoginService
      * Get JWT token from MNG API service to use other services.
      *
      * @throws GuzzleException
-     * @throws JsonException
      */
     public function login(Client|ClientInterface $client, string $apiKey, string $apiSecret): string
     {
@@ -46,6 +44,6 @@ class LoginService
             ]
         );
 
-        return json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
+        return $response->getBody()->getContents();
     }
 }

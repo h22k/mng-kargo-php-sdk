@@ -109,6 +109,7 @@ class MngClientTest extends MngTestCase
 
         $result = $mngClient->get(new Payload('test'));
 
+        $result = $result->getResponse();
         $this->assertSame($response, $result);
         $this->assertSame($expected['status'], $result->getStatusCode());
         $this->assertSame($expected['headers'], $result->getHeaders());
@@ -132,6 +133,7 @@ class MngClientTest extends MngTestCase
 
         $result = $mngClient->post(new Payload('test'));
 
+        $result = $result->getResponse();
         $this->assertSame($response, $result);
         $this->assertSame($expected['status'], $result->getStatusCode());
         $this->assertSame($expected['headers'], $result->getHeaders());
@@ -155,6 +157,7 @@ class MngClientTest extends MngTestCase
 
         $result = $mngClient->put(new Payload('test'));
 
+        $result = $result->getResponse();
         $this->assertSame($response, $result);
         $this->assertSame($expected['status'], $result->getStatusCode());
         $this->assertSame($expected['headers'], $result->getHeaders());
@@ -178,6 +181,7 @@ class MngClientTest extends MngTestCase
 
         $result = $mngClient->patch(new Payload('test'));
 
+        $result = $result->getResponse();
         $this->assertSame($response, $result);
         $this->assertSame($expected['status'], $result->getStatusCode());
         $this->assertSame($expected['headers'], $result->getHeaders());
@@ -201,7 +205,7 @@ class MngClientTest extends MngTestCase
 
         $result = $mngClient->delete(new Payload('test'));
 
-        $this->assertSame($response, $result);
+        $result = $result->getResponse();
         $this->assertSame($expected['status'], $result->getStatusCode());
         $this->assertSame($expected['headers'], $result->getHeaders());
         $this->assertSame($expected['body'], $result->getBody()->getContents());

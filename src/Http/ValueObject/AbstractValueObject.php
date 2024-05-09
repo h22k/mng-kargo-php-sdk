@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace H22k\MngKargo\Http\ValueObject;
 
 use H22k\MngKargo\Contract\HttpValue;
+use H22k\MngKargo\Exception\InvalidObjectException;
 
 abstract class AbstractValueObject implements HttpValue
 {
@@ -15,12 +16,13 @@ abstract class AbstractValueObject implements HttpValue
 
     /**
      * @param array<string, string|int|bool> $data
+     * @throws InvalidObjectException
      */
     public function __construct(array|object $data)
     {
         if (is_object($data)) {
             if (!method_exists($data, 'toArray')) {
-                throw new \InvalidArgumentException('Data object must have a toArray method');
+                throw new InvalidObjectException(get_class($data), 'toArray', static::class);
             }
             $data = $data->toArray();
         }

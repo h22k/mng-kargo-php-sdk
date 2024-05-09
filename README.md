@@ -29,13 +29,27 @@ Here's a basic example of how to use the client:
 ```php
 <?php
 
-use H22k\MngKargo\MngClient;
+declare(strict_types=1);
+
+require 'vendor/autoload.php';
+
 use H22k\MngKargo\Factory;
 
-$manager = Factory::create(/* parameters */)
+$mng = Factory::create(
+    'API_KEY',
+    'API_SECRET',
+    'PASS',
+    'CLIENT_NUMBER'
+)
+    ->setBaseUrl('https://testapi.mngkargo.com.tr/mngapi/api/')
+    ->setDebug(true)
     ->make();
 
-$manager->cbsInfo()->getCities();
+$cities = $mng->cbsInfo()->getCities(); // H22k\MngKargo\Model\Response\CbsInfo\CityResponse
+$cities = $cities->cities(); // H22k\MngKargo\Model\Response\CbsInfo\Object\City[]
+
+$city = $cities[0]; // H22k\MngKargo\Model\Response\CbsInfo\Object\City
+$districts = $mng->cbsInfo()->getDistricts($city); // H22k\MngKargo\Model\Response\CbsInfo\DistrictResponse
 ```
 
 [//]: # (For more detailed examples, see the [examples]&#40;./examples&#41; directory.)
