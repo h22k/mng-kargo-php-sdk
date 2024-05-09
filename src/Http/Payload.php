@@ -21,9 +21,9 @@ final class Payload
         ?QueryParam $queryParam = null,
         ?Header $header = null
     ) {
-        $this->body = $body ?? new Body([]);
+        $this->body       = $body ?? new Body([]);
         $this->queryParam = $queryParam ?? new QueryParam([]);
-        $this->header = $header ?? new Header([]);
+        $this->header     = $header ?? new Header([]);
     }
 
     public static function from(

@@ -128,7 +128,7 @@ class Factory
 
     private function buildMngClient(): MngClient
     {
-        $client = $this->buildClient();
+        $client       = $this->buildClient();
         $loginService = new LoginService($this->mngClientNumber, $this->password);
 
         return (new MngClient(

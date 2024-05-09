@@ -12,6 +12,7 @@
     "scripts": {
         "phpstan": "phpstan analyse",
         "phpcs": "phpcs",
+        "fix": "phpcbf",
         "test": "pest",
         "test:coverage": "pest --coverage",
         "test:coverage-html": "pest --coverage --coverage-html=coverage-report"
