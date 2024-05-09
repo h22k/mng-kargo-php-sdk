@@ -5,16 +5,34 @@ declare(strict_types=1);
 namespace H22k\MngKargo\Http;
 
 use H22k\MngKargo\Enum\ContentType;
+use H22k\MngKargo\Exception\InvalidObjectException;
 use H22k\MngKargo\Http\ValueObject\Body;
 use H22k\MngKargo\Http\ValueObject\Header;
 use H22k\MngKargo\Http\ValueObject\QueryParam;
 
+/**
+ * Entity implementation to manage HTTP payloads.
+ */
 final class Payload
 {
+    /**
+     * Http Json Body
+     */
     private Body $body;
+
+    /**
+     * Http Query Params.
+     */
     private QueryParam $queryParam;
+
+    /**
+     * Http Header.
+     */
     private Header $header;
 
+    /**
+     * @throws InvalidObjectException
+     */
     public function __construct(
         private readonly string $uri,
         ?Body $body = null,
@@ -26,6 +44,9 @@ final class Payload
         $this->header     = $header ?? new Header([]);
     }
 
+    /**
+     * @throws InvalidObjectException
+     */
     public static function from(
         string $uri,
         ?Body $body = null,

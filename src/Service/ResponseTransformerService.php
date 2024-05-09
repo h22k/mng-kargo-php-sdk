@@ -9,6 +9,8 @@ use PHPUnit\Util\InvalidJsonException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
+ * Transform the JSON Based response to class based.
+ *
  * @template K
  */
 class ResponseTransformerService

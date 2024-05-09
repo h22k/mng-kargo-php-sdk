@@ -30,7 +30,7 @@ class DistrictResponse extends MngResponse
      */
     public static function from(ResponseTransformerService $transformerService, City $city): self
     {
-        $body      = $transformerService->getBody();
+        $body = $transformerService->getBody();
         $districts = [];
 
         foreach ($body as $district) {
