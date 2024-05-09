@@ -12,13 +12,15 @@ use H22k\MngKargo\Model\Response\CbsInfo\Object\City;
 use H22k\MngKargo\Service\ResponseTransformerService;
 
 /**
- * Şehirler, ilçeler mahalleler gibi coğrafik bilgileri getirir ve servis dışı ve mobil olan alanları listeler.
- * Gets geographic informations like citites, districts, neighborhoods and lists out of service areas and mobile areas.
- *
+ * [TR] Şehirler, ilçeler mahalleler gibi coğrafik bilgileri getirir ve servis dışı ve mobil olan alanları listeler.
+ * [EN] Gets geographic informations like citites, districts, neighborhoods and lists out of service areas and mobile areas.
  * @see https://apizone.mngkargo.com.tr/tr/product/3066/api/1741#/CBSInfoAPI_10/overview
  */
 class CbsInfo extends AbstractResource
 {
+    /**
+     * Resource path prefix.
+     */
     public const PATH_PREFIX = 'cbsinfoapi';
 
     public const GET_CITIES_URI = 'getcities';
@@ -26,8 +28,8 @@ class CbsInfo extends AbstractResource
     public const GET_DISTRICTS_URI = 'getdistricts';
 
     /**
-     * Türkiye'deki şehirlerin ismini ve kodlarını getirir.
-     * Gets city names and city codes of Turkey.
+     * [TR] Türkiye'deki şehirlerin ismini ve kodlarını getirir.
+     * [EN] Gets city names and city codes of Turkey.
      *
      * @throws GuzzleException
      *
@@ -46,8 +48,8 @@ class CbsInfo extends AbstractResource
     }
 
     /**
-     * İlgili şehir koduna ait ilçe isimlerini ve kodlarını getirir.
-     * Gets district names and district codes of the relevant city code.
+     * [TR] İlgili şehir koduna ait ilçe isimlerini ve kodlarını getirir.
+     * [EN] Gets district names and district codes of the relevant city code.
      *
      * @throws GuzzleException
      *
@@ -55,7 +57,7 @@ class CbsInfo extends AbstractResource
      */
     public function getDistricts(City $city): DistrictResponse
     {
-        $payload = Payload::from(self::PATH_PREFIX . '/' . self::GET_DISTRICTS_URI . '/1');
+        $payload = Payload::from(self::PATH_PREFIX . '/' . self::GET_DISTRICTS_URI . $city->getCode());
 
         $responseTransformerService = $this->client->get($payload);
 
