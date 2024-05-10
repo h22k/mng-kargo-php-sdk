@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace H22k\MngKargo\Service;
 
+use H22k\MngKargo\Exception\InvalidJsonException;
 use JsonException;
-use PHPUnit\Util\InvalidJsonException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -22,6 +22,7 @@ class ResponseTransformerService
     /**
      * @return array<K>
      * @phpstan-return array<K>
+     * @throws InvalidJsonException
      */
     public function getBody(): array
     {
@@ -30,7 +31,7 @@ class ResponseTransformerService
         try {
             $bodyAsArray = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
-            throw new InvalidJsonException($e->getMessage());
+            throw new InvalidJsonException($e);
         }
 
         return $bodyAsArray;
