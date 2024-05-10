@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace H22k\MngKargo\Model\Response\CbsInfo;
 
-use H22k\MngKargo\Model\Response\CbsInfo\Object\City;
-use H22k\MngKargo\Model\Response\CbsInfo\Object\District;
 use H22k\MngKargo\Model\Response\MngResponse;
+use H22k\MngKargo\Model\Response\Object\City;
+use H22k\MngKargo\Model\Response\Object\District;
 use H22k\MngKargo\Service\ResponseTransformerService;
 use Psr\Http\Message\ResponseInterface;
 
