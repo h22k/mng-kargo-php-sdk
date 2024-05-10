@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace H22k\MngKargo\Model\Response\CbsInfo\Object;
+namespace H22k\MngKargo\Model\Response\Object;
 
 class District
 {
