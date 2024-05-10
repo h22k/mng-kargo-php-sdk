@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace H22k\MngKargo\Resource;
 
 use GuzzleHttp\Exception\GuzzleException;
-use H22k\MngKargo\Exception\InvalidObjectException;
+use H22k\MngKargo\Exception\InvalidJsonException;
 use H22k\MngKargo\Http\Payload;
 use H22k\MngKargo\Model\Response\CbsInfo\CityResponse;
 use H22k\MngKargo\Model\Response\CbsInfo\DistrictResponse;
@@ -32,7 +32,7 @@ class CbsInfo extends AbstractResource
      * [TR] Türkiye'deki şehirlerin ismini ve kodlarını getirir.
      * [EN] Gets city names and city codes of Turkey.
      *
-     * @throws GuzzleException|InvalidObjectException
+     * @throws GuzzleException
      *
      * @see https://sandbox.mngkargo.com.tr/tr/product/2134/api/2121#/CBSInfoAPI_10/operation/%2Fgetcities/get
      */
@@ -52,7 +52,7 @@ class CbsInfo extends AbstractResource
      * [TR] İlgili şehir koduna ait ilçe isimlerini ve kodlarını getirir.
      * [EN] Gets district names and district codes of the relevant city code.
      *
-     * @throws GuzzleException|InvalidObjectException
+     * @throws GuzzleException|InvalidJsonException
      *
      * @see https://sandbox.mngkargo.com.tr/tr/product/2134/api/2121#/CBSInfoAPI_10/operation/%2Fgetdistricts%2F{cityCode}/get
      */
@@ -60,6 +60,9 @@ class CbsInfo extends AbstractResource
     {
         $payload = Payload::from(self::PATH_PREFIX . '/' . self::GET_DISTRICTS_URI . '/' . $city->getCode());
 
+        /**
+         * @var ResponseTransformerService<array{code: string, name: string, cityCode: string, cityName: string}> $responseTransformerService
+         */
         $responseTransformerService = $this->client->get($payload);
 
         return DistrictResponse::from($responseTransformerService, $city);
