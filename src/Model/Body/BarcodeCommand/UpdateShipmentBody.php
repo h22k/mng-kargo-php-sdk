@@ -26,6 +26,7 @@ class UpdateShipmentBody implements Arrayable
         private readonly ?float $codAmount = null,
         array $orderPieceList = []
     ) {
+        // Use this method to be sure of every element of order piece list is instance of H22k\MngKargo\Model\Object\OrderPiece
         $this->setOrderPieceList($orderPieceList);
     }
 
