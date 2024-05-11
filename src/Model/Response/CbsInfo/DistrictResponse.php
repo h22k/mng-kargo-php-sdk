@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace H22k\MngKargo\Model\Response\CbsInfo;
 
 use H22k\MngKargo\Exception\InvalidJsonException;
+use H22k\MngKargo\Model\Object\City;
+use H22k\MngKargo\Model\Object\District;
 use H22k\MngKargo\Model\Response\MngResponse;
-use H22k\MngKargo\Model\Response\Object\City;
-use H22k\MngKargo\Model\Response\Object\District;
 use H22k\MngKargo\Service\ResponseTransformerService;
 use Psr\Http\Message\ResponseInterface;
 
@@ -25,7 +25,7 @@ class DistrictResponse extends MngResponse
     }
 
     /**
-     * @param ResponseTransformerService<array{code: string, name: string, cityCode: string, cityName: string}> $transformerService
+     * @param ResponseTransformerService<array<array{code: string, name: string, cityCode: string, cityName: string}>> $transformerService
      * @param City $city
      * @return DistrictResponse
      * @throws InvalidJsonException

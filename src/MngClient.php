@@ -52,7 +52,7 @@ final class MngClient
 
     /**
      * @param Payload $payload
-     * @return ResponseTransformerService<mixed>
+     * @return ResponseTransformerService<array<mixed>>
      * @throws GuzzleException
      */
     public function get(Payload $payload): ResponseTransformerService
@@ -65,7 +65,7 @@ final class MngClient
 
     /**
      * @param MngClientRequestOption $option
-     * @return ResponseTransformerService<mixed>
+     * @return ResponseTransformerService<array<mixed>>
      * @throws GuzzleException
      */
     private function autoLoginRequest(MngClientRequestOption $option): ResponseTransformerService
@@ -104,7 +104,7 @@ final class MngClient
 
     /**
      * @param Payload $payload
-     * @return ResponseTransformerService<mixed>
+     * @return ResponseTransformerService<array<mixed>>
      * @throws GuzzleException
      */
     public function put(Payload $payload): ResponseTransformerService
@@ -116,7 +116,7 @@ final class MngClient
 
     /**
      * @param Payload $payload
-     * @return ResponseTransformerService<mixed>
+     * @return ResponseTransformerService<array<mixed>>
      * @throws GuzzleException
      */
     public function delete(Payload $payload): ResponseTransformerService
@@ -128,7 +128,7 @@ final class MngClient
 
     /**
      * @param Payload $payload
-     * @return ResponseTransformerService<mixed>
+     * @return ResponseTransformerService<array<mixed>>
      * @throws GuzzleException
      */
     public function patch(Payload $payload): ResponseTransformerService
@@ -140,7 +140,7 @@ final class MngClient
 
     /**
      * @param Payload $payload
-     * @return ResponseTransformerService<mixed>
+     * @return ResponseTransformerService<array<mixed>>
      * @throws GuzzleException
      */
     public function post(Payload $payload): ResponseTransformerService

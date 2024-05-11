@@ -12,3 +12,6 @@
 .php-cs-fixer.cache
 error.log
 examples/
+
+.idea/
+.idea/*

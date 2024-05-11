@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace H22k\MngKargo\Test\Unit\Model\Response\CbsInfo;
 
 use Generator;
+use H22k\MngKargo\Model\Object\City;
 use H22k\MngKargo\Model\Response\CbsInfo\CityResponse;
-use H22k\MngKargo\Model\Response\Object\City;
 use H22k\MngKargo\Test\Unit\Model\Response\MngResponseTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;

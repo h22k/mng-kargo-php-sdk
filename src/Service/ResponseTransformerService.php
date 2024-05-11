@@ -11,7 +11,7 @@ use Psr\Http\Message\ResponseInterface;
 /**
  * Transform the JSON Based response to class based.
  *
- * @template K
+ * @template T of array
  */
 class ResponseTransformerService
 {
@@ -20,8 +20,8 @@ class ResponseTransformerService
     }
 
     /**
-     * @return array<K>
-     * @phpstan-return array<K>
+     * @return array
+     * @phpstan-return T
      * @throws InvalidJsonException
      */
     public function getBody(): array
