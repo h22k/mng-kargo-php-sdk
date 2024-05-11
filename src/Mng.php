@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace H22k\MngKargo;
 
+use H22k\MngKargo\Resource\BarcodeCommand;
 use H22k\MngKargo\Resource\CbsInfo;
 
 /**
@@ -19,5 +20,10 @@ class Mng
     public function cbsInfo(): CbsInfo
     {
         return new CbsInfo($this->client);
+    }
+
+    public function barcodeCommand(): BarcodeCommand
+    {
+        return new BarcodeCommand($this->client);
     }
 }

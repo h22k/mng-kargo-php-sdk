@@ -7,9 +7,9 @@ namespace H22k\MngKargo\Resource;
 use GuzzleHttp\Exception\GuzzleException;
 use H22k\MngKargo\Exception\InvalidJsonException;
 use H22k\MngKargo\Http\Payload;
+use H22k\MngKargo\Model\Object\City;
 use H22k\MngKargo\Model\Response\CbsInfo\CityResponse;
 use H22k\MngKargo\Model\Response\CbsInfo\DistrictResponse;
-use H22k\MngKargo\Model\Response\Object\City;
 use H22k\MngKargo\Service\ResponseTransformerService;
 
 /**
@@ -41,7 +41,7 @@ class CbsInfo extends AbstractResource
         $payload = Payload::from(self::PATH_PREFIX . '/' . self::GET_CITIES_URI);
 
         /**
-         * @var ResponseTransformerService<array{code: string, name: string}> $responseTransformerService
+         * @var ResponseTransformerService<array<array{code: string, name: string}>> $responseTransformerService
          */
         $responseTransformerService = $this->client->get($payload);
 
@@ -61,7 +61,7 @@ class CbsInfo extends AbstractResource
         $payload = Payload::from(self::PATH_PREFIX . '/' . self::GET_DISTRICTS_URI . '/' . $city->getCode());
 
         /**
-         * @var ResponseTransformerService<array{code: string, name: string, cityCode: string, cityName: string}> $responseTransformerService
+         * @var ResponseTransformerService<array<array{code: string, name: string, cityCode: string, cityName: string}>> $responseTransformerService
          */
         $responseTransformerService = $this->client->get($payload);
 

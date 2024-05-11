@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace H22k\MngKargo\Test\Unit\Resource;
 
 use GuzzleHttp\Exception\GuzzleException;
-use H22k\MngKargo\Exception\InvalidObjectException;
-use H22k\MngKargo\Model\Response\Object\City;
-use H22k\MngKargo\Model\Response\Object\District;
+use H22k\MngKargo\Model\Object\City;
+use H22k\MngKargo\Model\Object\District;
 use H22k\MngKargo\Resource\CbsInfo;
 use H22k\MngKargo\Test\MngTestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -18,7 +17,7 @@ class CbsInfoTest extends MngTestCase
 {
     /**
      * @throws GuzzleException
-     * @throws Exception|InvalidObjectException
+     * @throws Exception
      */
     public function testGetCities(): void
     {

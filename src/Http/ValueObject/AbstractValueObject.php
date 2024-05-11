@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace H22k\MngKargo\Http\ValueObject;
 
 use H22k\MngKargo\Contract\HttpValue;
-use H22k\MngKargo\Exception\InvalidObjectException;
+use H22k\MngKargo\Model\Contract\Arrayable;
 
 abstract class AbstractValueObject implements HttpValue
 {
@@ -15,15 +15,11 @@ abstract class AbstractValueObject implements HttpValue
     protected array $data;
 
     /**
-     * @param array<string, string|int|bool> $data
-     * @throws InvalidObjectException
+     * @param array<string, string|int|bool>|Arrayable<array<mixed>> $data
      */
-    public function __construct(array|object $data)
+    public function __construct(array|Arrayable $data)
     {
         if (is_object($data)) {
-            if (!method_exists($data, 'toArray')) {
-                throw new InvalidObjectException(get_class($data), 'toArray', static::class);
-            }
             $data = $data->toArray();
         }
 

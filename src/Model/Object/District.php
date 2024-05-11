@@ -2,14 +2,22 @@
 
 declare(strict_types=1);
 
-namespace H22k\MngKargo\Model\Response\Object;
+namespace H22k\MngKargo\Model\Object;
 
-class City
+// @codeCoverageIgnoreStart
+
+class District
 {
     public function __construct(
         private readonly string $code,
         private readonly string $name,
+        private readonly City $city,
     ) {
+    }
+
+    public function getCity(): City
+    {
+        return $this->city;
     }
 
     public function getCode(): string
@@ -21,4 +29,4 @@ class City
     {
         return $this->name;
     }
-}
+} // @codeCoverageIgnoreEnd
