@@ -14,7 +14,7 @@
         "phpcs": "phpcs",
         "fix": "phpcbf",
         "test": "pest",
-        "test:coverage": "pest --coverage",
+        "test:coverage": "pest --coverage --min=95",
         "test:coverage-html": "pest --coverage --coverage-html=coverage-report"
     },
     "require": {

@@ -6,6 +6,8 @@ namespace H22k\MngKargo\Model\Object;
 
 use H22k\MngKargo\Model\Contract\Arrayable;
 
+// @codeCoverageIgnoreStart
+
 /**
  * @implements Arrayable<array{barcode: string, desi: int, kg: int, content: ?string}>
  */
@@ -49,3 +51,4 @@ class OrderPiece implements Arrayable
         ];
     }
 }
+// @codeCoverageIgnoreEnd
