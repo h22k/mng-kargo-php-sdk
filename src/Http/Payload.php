@@ -29,7 +29,6 @@ final class Payload
      */
     private Header $header;
 
-
     public function __construct(
         private readonly string $uri,
         ?Body $body = null,
@@ -56,7 +55,7 @@ final class Payload
         return $this->uri;
     }
 
-    public function contentType(ContentType $contentType): void
+    public function setContentType(ContentType $contentType): void
     {
         $this->header->contentType($contentType);
     }

@@ -22,4 +22,5 @@ class City
     {
         return $this->name;
     }
-} // @codeCoverageIgnoreEnd
+}
+// @codeCoverageIgnoreEnd

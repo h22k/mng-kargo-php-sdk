@@ -29,4 +29,5 @@ class District
     {
         return $this->name;
     }
-} // @codeCoverageIgnoreEnd
+}
+// @codeCoverageIgnoreEnd

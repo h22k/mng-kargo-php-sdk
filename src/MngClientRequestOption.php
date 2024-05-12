@@ -19,7 +19,7 @@ class MngClientRequestOption
         private readonly Payload $payload
     ) {
         if ($this->shouldHasBody()) {
-            $this->payload->contentType($contentType);
+            $this->payload->setContentType($contentType);
         }
     }
 

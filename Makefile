@@ -15,4 +15,4 @@ coverage-html:
 ## sure: 📦 Make sure of code is fault free and ready to push 😗
 .PHONY: sure
 sure:
-	composer test && composer phpstan && composer phpcs
+	composer test:coverage && composer phpstan && composer phpcs
