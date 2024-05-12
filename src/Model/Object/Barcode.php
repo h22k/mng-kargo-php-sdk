@@ -22,4 +22,5 @@ class Barcode
     {
         return $this->pieceNumber;
     }
-} // @codeCoverageIgnoreEnd
+}
+// @codeCoverageIgnoreEnd
