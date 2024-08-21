@@ -1,7 +1,7 @@
+#WARNING
+This project is no longer being developed. 
 
 # MngKargo PHP Client
-
-!!! Will be updated.
 
 This is a PHP client for the MngKargo API. It provides a simple and convenient way to interact with the API, allowing you to focus on writing your application.
 
